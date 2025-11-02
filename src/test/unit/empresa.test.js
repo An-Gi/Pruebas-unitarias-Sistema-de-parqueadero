@@ -296,7 +296,15 @@ describe('Pruebas de la capa service para la ruta "GET /logo"', () => {
     expect(respuesta.statusCode).toBe(404);
   });
 
-  test('"StatusCode = 200" cuando se logra ver el logo de una empresa', async () => {
+  test('"StatusCode = 200" cuando se logra ver el logo en formato jpeg de una empresa', async () => {
+    dataBase.query.mockResolvedValueOnce([[ { logo_url: Buffer.from([0xFF, 0xD8, 0xFF]) } ]]);
+    const solicitud = { user: { id_empresa: 1 } };
+    await handler(solicitud, respuesta);
+    // Se verifica que la empresa tenía logo
+    expect(respuesta.statusCode).toBe(200);
+  });
+  
+  test('"StatusCode = 200" cuando se logra ver el logo en formato png de una empresa', async () => {
     dataBase.query.mockResolvedValueOnce([[ { logo_url: Buffer.from([0x89, 0x50, 0x4E, 0x47]) } ]]);
     const solicitud = { user: { id_empresa: 1 } };
     await handler(solicitud, respuesta);
@@ -304,7 +312,15 @@ describe('Pruebas de la capa service para la ruta "GET /logo"', () => {
     expect(respuesta.statusCode).toBe(200);
   });
 
-  test('"StatusCode = 500" cuando se uiere ver el logo con datos inválidos en la solicitud', async () => {
+  test('"StatusCode = 200" cuando se logra ver el logo en formato gif de una empresa', async () => {
+    dataBase.query.mockResolvedValueOnce([[ { logo_url: Buffer.from([0x47, 0x49, 0x46, 0x38]) } ]]);
+    const solicitud = { user: { id_empresa: 1 } };
+    await handler(solicitud, respuesta);
+    // Se verifica que la empresa tenía logo
+    expect(respuesta.statusCode).toBe(200);
+  });
+
+  test('"StatusCode = 500" cuando se quiere ver el logo con datos inválidos en la solicitud', async () => {
     const solicitud = 0;
     await handler(solicitud, respuesta);
     expect(respuesta.statusCode).toBe(500);
