@@ -2,27 +2,13 @@
 const infoEmpresa = {
   id_empresa: 1,
   nombre: 'Empresa Dummy',
-  nit: '123-456',
-  direccion: 'Alajuela',
-  telefono: '8888-8888',
-  email: 'email@prueba.com',
-  activa: true,
-  fecha_registro: '2025-01-10 09:15:00',
-  plan: 'premium'
+  nit: '123-456'
 };
 
 const configEmpresa = {
   id_configuracion: 1,
   id_empresa: 1,
-  capacidad_total_carros: 27,
-  capacidad_total_motos: 12,
-  capacidad_total_bicicletas: 2003,
-  horario_apertura: '06:00:00',
-  horario_cierre: '22:00:00',
-  iva_porcentaje: 13.00,
-  moneda: 'CRC',
-  zona_horaria: 'GMT-6',
-  operacion_24h: false
+  capacidad_total_carros: 25
 };
 
 // Mocks
@@ -47,6 +33,16 @@ function generarRespuesta() {
     res.jsonPayload = payload;
     return res;
   };
+  res.formatoMultimedia = {};
+  res.set = function (tipo, formato) {
+    res.formatoMultimedia[tipo] = formato;
+    return res;
+  };
+  res.contenidoMultimedia = null;
+  res.send = function (contenido) {
+    res.contenidoMultimedia = contenido;
+    return res;
+  };
   return res;
 }
 
@@ -67,7 +63,7 @@ describe('Pruebas de la capa service para la ruta "GET /me"', () => {
     // Se setea una respuesta vacía
     dataBase.query.mockResolvedValueOnce([[]]);
     // Para realizar la búsqueda
-    const solicitud = { user: { id_empresa: 1 } };
+    const solicitud = { user: { id_empresa: 2 } };
     // Se ejecuta el handler
     await handler(solicitud, respuesta);
     // Se verifica que no encontró nada
@@ -113,7 +109,7 @@ describe('Pruebas de la capa service para la ruta "GET /config"', () => {
 
   test('"StatusCode = 404" cuando se busca una empresa que no existe', async () => {
     dataBase.query.mockResolvedValueOnce([[]]);
-    const solicitud = { user: { id_empresa: 1 } };
+    const solicitud = { user: { id_empresa: 2 } };
     await handler(solicitud, respuesta);
     expect(respuesta.statusCode).toBe(404);
   });
@@ -171,10 +167,10 @@ describe('Pruebas de la capa service para la ruta "PUT /"', () => {
   });
 
   test('"StatusCode = 404" cuando se solicita modificar datos de una empresa que no existe', async () => {
-    // UPDATE sin impacto
+    // Se simula un UPDATE sin cambios
     dataBase.query.mockResolvedValueOnce([{ affectedRows: 0 }]);
     const solicitud = { 
-      user: { id_empresa: 1 }, 
+      user: { id_empresa: 2 }, 
       body: { nombre: 'Nombre prueba' } 
     };
     await handler(solicitud, respuesta);
@@ -215,3 +211,109 @@ describe('Pruebas de la capa service para la ruta "PUT /"', () => {
   });
 });
 
+describe('Pruebas de la capa service para la ruta "PUT /config"', () => {
+  let respuesta;
+  let handler;
+  beforeEach(() => {
+    respuesta = generarRespuesta();
+    const capaConfig = rutasEmpresa.stack.find(
+      (capa) => capa.route && capa.route.path === '/config' && capa.route.methods.put
+    );
+    handler = capaConfig.route.stack.at(-1).handle;
+  });
+
+  test('"StatusCode = 400" cuando se solicita una modificación sin brindar datos', async () => {
+    const solicitud = { body: {} };
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(400);
+  });
+
+  test('"StatusCode = 200" cuando se modifica al menos un dato de la empresa', async () => {
+    dataBase.query.mockResolvedValueOnce([{ affectedRows: 1 }]);
+    const solicitud = {
+      user: { id_empresa: 1 },
+      body: { capacidad_total_carros: '27' }
+    };
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(200);
+  });
+
+  test('"StatusCode = 404" cuando se solicita modificar datos de una empresa que no existe', async () => {
+    dataBase.query.mockResolvedValueOnce([{ affectedRows: 0 }]);
+    const solicitud = { 
+      user: { id_empresa: 2 }, 
+      body: { capacidad_total_carros: '27' } 
+    };
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(404);
+  });
+
+  test('"StatusCode = 500" cuando solicita una modificación con datos inválidos', async () => {
+    const solicitud = 0;
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(500);
+  });
+
+  test('"StatusCode = 500" cuando ocurre un error inesperado en la modificación', async () => {
+    dataBase.query.mockRejectedValueOnce(new Error('Error de prueba'));
+    const solicitud = { 
+      user: { id_empresa: 1 }, 
+      body: { capacidad_total_carros: '27' } 
+    };
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(500);
+  });
+});
+
+describe('Pruebas de la capa service para la ruta "GET /logo"', () => {
+  let respuesta;
+  let handler;
+  beforeEach(() => {
+    // Se instancia una variable para guardar las respuestas del sistema
+    respuesta = generarRespuesta();
+    // Se instancia el handler real
+    const capaLogo = rutasEmpresa.stack.find(
+      capa => capa.route && capa.route.path === '/logo' && capa.route.methods.get
+    );
+    handler = capaLogo.route.stack.at(-1).handle;
+  });
+
+  test('"StatusCode = 404" cuando se quiere ver el logo de una empresa sin logo', async () => {
+    // Se setea una respuesta vacía
+    dataBase.query.mockResolvedValueOnce([[]]);
+    const solicitud = { user: { id_empresa: 1 } };
+    await handler(solicitud, respuesta);
+    // Se verifica que no tenía logo
+    expect(respuesta.statusCode).toBe(404);
+  });
+
+  test('"StatusCode = 404" cuando se quiere ver el logo de una empresa con "logo = null"', async () => {
+    // Se setea una respuesta de null
+    dataBase.query.mockResolvedValueOnce([[ { logo_url: null } ]]);
+    const solicitud = { user: { id_empresa: 1 } };
+    await handler(solicitud, respuesta);
+    // Se verifica que un null asignado también cuenta como empresa sin logo
+    expect(respuesta.statusCode).toBe(404);
+  });
+
+  test('"StatusCode = 200" cuando se logra ver el logo de una empresa', async () => {
+    dataBase.query.mockResolvedValueOnce([[ { logo_url: Buffer.from([0x89, 0x50, 0x4E, 0x47]) } ]]);
+    const solicitud = { user: { id_empresa: 1 } };
+    await handler(solicitud, respuesta);
+    // Se verifica que la empresa tenía logo
+    expect(respuesta.statusCode).toBe(200);
+  });
+
+  test('"StatusCode = 500" cuando se uiere ver el logo con datos inválidos en la solicitud', async () => {
+    const solicitud = 0;
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(500);
+  });
+
+  test('"StatusCode = 500" cuando ocurre un error en la busqueda del logo en la base de datos', async () => {
+    dataBase.query.mockRejectedValueOnce(new Error('Error de prueba'));
+    const solicitud = { user: { id_empresa: 1 } };
+    await handler(solicitud, respuesta);
+    expect(respuesta.statusCode).toBe(500);
+  });
+});
