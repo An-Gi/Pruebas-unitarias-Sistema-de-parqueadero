@@ -12,13 +12,13 @@ const configEmpresa = {
 };
 
 // Mocks
-jest.mock('../config/db', () => ({
+jest.mock('../../config/db', () => ({
   query: jest.fn()
 }));
 
 // Dependencias
-const rutasEmpresa = require('../routes/empresa');
-const dataBase = require('../config/db');
+const rutasEmpresa = require('../../routes/empresa');
+const dataBase = require('../../config/db');
 
 // Simula respuesta Express
 function generarRespuesta() {
