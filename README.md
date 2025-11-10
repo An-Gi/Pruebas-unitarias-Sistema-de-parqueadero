@@ -35,8 +35,13 @@ npm test
         - Para la generación de reportes de pruebas se utilizó Jest, eligiendo V8 como proveedor de cobertura. Se prefirió V8 por encima de Babel debido a que es más rápido, mide directamente el código que ejecuta Node.js y requiere menos configuración adicional.
         - Jest genera el [reporte de cobertura](coverage/lcov-report/index.html) en formato HTML y puede verse en línea desde la [GitHub Page](https://an-gi.github.io/Pruebas-unitarias-Sistema-de-parqueadero/reporte/lcov-report/) del repositorio.
 
+<p align="center">
+  <img src="pictures/ReporteDeCobertura.png" alt="Reporte de cobertura" width="750"/>
+</p>
+
 - Avance 3 - 02/12/25 - Pendiente
     - Pruebas automatizadas
     - Informe de reporte de errores
     - Análisis de los problemas
+
 
