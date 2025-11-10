@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest --coverage",
+    "test": "jest",
     "build:clean": "rimraf dist && mkdirp dist",
     "build:exe": "pkg src/server.js --targets node18-win-x64 --output dist/parqueadero.exe",
     "build:copy": "cpy \"public/**\" dist/public --cwd=. --parents && cpy schema.sql .env* dist/ --cwd=.",
