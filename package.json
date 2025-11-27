@@ -29,6 +29,7 @@
     "@types/jest": "^30.0.0",
     "cpy-cli": "^5.0.0",
     "cross-env": "^10.1.0",
+    "cypress": "^15.7.0",
     "jest": "^30.2.0",
     "mkdirp": "^3.0.1",
     "nodemon": "^3.1.10",
@@ -38,5 +39,17 @@
     "youtube-transcript": "^1.2.1",
     "youtubei.js": "^15.1.1",
     "ytdl-core": "^4.11.5"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/An-Gi/Pruebas-unitarias-Sistema-de-parqueadero.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/An-Gi/Pruebas-unitarias-Sistema-de-parqueadero/issues"
+  },
+  "homepage": "https://github.com/An-Gi/Pruebas-unitarias-Sistema-de-parqueadero#readme"
 }
