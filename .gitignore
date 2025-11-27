@@ -1,2 +1,5 @@
 # Ignorar archivos de entorno
 .env
+
+# Ignorar modulos de dependencia (se generan con `npm install`)
+node_modules/

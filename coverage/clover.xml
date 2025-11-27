@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1762747574596" clover="3.2.0">
-  <project timestamp="1762747574596" name="All files">
-    <metrics statements="989" coveredstatements="615" conditionals="132" coveredconditionals="98" methods="22" coveredmethods="15" elements="1143" coveredelements="728" complexity="0" loc="989" ncloc="989" packages="4" files="9" classes="9"/>
+<coverage generated="1764269544222" clover="3.2.0">
+  <project timestamp="1764269544222" name="All files">
+    <metrics statements="989" coveredstatements="615" conditionals="136" coveredconditionals="98" methods="22" coveredmethods="15" elements="1147" coveredelements="728" complexity="0" loc="989" ncloc="989" packages="4" files="9" classes="9"/>
     <package name="config">
-      <metrics statements="17" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="17" coveredstatements="17" conditionals="4" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="db.js" path="/home/sebco/Documents/QA/Pruebas-unitarias-Sistema-de-parqueadero/src/config/db.js">
-        <metrics statements="17" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="17" coveredstatements="17" conditionals="4" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="9" count="1" type="stmt"/>
+        <line num="6" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="7" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="8" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="9" count="1" type="cond" truecount="0" falsecount="1"/>
         <line num="10" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
