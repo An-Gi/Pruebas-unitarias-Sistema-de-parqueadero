@@ -18,3 +18,9 @@ Cypress.Commands.add('loginAdmin', (usuario, password) => {
 
   cy.url().should('not.include', '/login');
 });
+
+Cypress.Commands.add('registrarVehiculo', (placa, tipo) => {
+  cy.get('#ingPlaca').clear().type(placa);
+  cy.get(`label[for="tipo${tipo}"]`).click();
+  cy.contains('button', 'Ingresar').click();
+});

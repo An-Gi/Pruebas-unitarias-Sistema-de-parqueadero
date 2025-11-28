@@ -2,11 +2,15 @@ describe('Gestión de ingreso de vehículos', () => {
   
   let PLACA;
   let TIPO;
+  let METODO_PAGO;
+  let MONTO;
   let AUTO_REGISTRADO;
 
   beforeEach(() => {
     PLACA = '';
     TIPO = '';
+    METODO_PAGO = '';
+    MONTO = 0;
     AUTO_REGISTRADO = false;
 
     const USUARIO = 'admin';
@@ -155,5 +159,298 @@ describe('Gestión de ingreso de vehículos', () => {
         AUTO_REGISTRADO = true;
       }
     });
+  });
+
+  it('Caso 57: Validar el ingreso de un vehículo con placa inválida ("-" mal colocado)', () => {
+    // definimos los datos a usar
+    PLACA = 'CT-R2712'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
+    });
+  });
+
+  it('Caso 58: Validar el ingreso de un vehículo con placa inválida (letras en el campo de números)', () => {
+    // definimos los datos a usar
+    PLACA = 'ABC-1SQ'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
+    });
+  });
+
+  it('Caso 59: Validar el ingreso de un vehículo con placa inválida (números en el campo de letras)', () => {
+    // definimos los datos a usar
+    PLACA = 'A34-987'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
+    });
+  });
+
+  it('Caso 60: Validar el ingreso de un vehículo con placa inválida (letras minúsculas)', () => {
+    // definimos los datos a usar
+    PLACA = 'eta-246'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
+    });
+  });
+
+  it('Caso 61: Validar el ingreso de un vehículo con placa inválida (placa con símbolos)', () => {
+    // definimos los datos a usar
+    PLACA = 'A$F-4#3'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
+    });
+  });
+
+  it('Caso 62: Validar que el registro de salida y cobro de un vehículo con datos válidos funcione correctamente', () => {
+    // definimos los datos a usar
+    PLACA = 'MOT-159'
+    TIPO = 'Moto'
+    MONTO = 100000;
+    // registrar el vehículo para poder sacarlo después
+    cy.registrarVehiculo(PLACA, TIPO);
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // falta elegir el método
+
+    // agregamos el monto a pagar
+    cy.get('input.monto').clear().type(MONTO);
+    // confirmamos el pago
+    cy.get('#btnConfirmPagos').should('be.visible').click();
+
+    // falta cerrar todo y comprobar la factura
+  });
+
+  it('Caso 63: Validar el manejo de cobro sin placa', () => {
+    // definimos los datos a usar
+    PLACA = ''
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear();
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+
+  it('Caso 64: Validar el manejo de cobro con placa inválida (longitud < 7)', () => {
+    // definimos los datos a usar
+    PLACA = 'CTR-12'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+
+  it('Caso 65: Validar el manejo de cobro con placa inválida (longitud > 7)', () => {
+    // definimos los datos a usar
+    PLACA = 'CTR-2712'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+  //
+  //
+  //
+  it('Caso 66: Validar el manejo de cobro con placa inválida ("-" mal colocado)', () => {
+    // definimos los datos a usar
+    PLACA = 'CT-R270'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+
+  it('Caso 67: Validar el manejo de cobro con placa inválida (letras en el campo de números)', () => {
+    // definimos los datos a usar
+    PLACA = 'ABC-1SQ'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+
+  it('Caso 68: Validar el manejo de cobro con placa inválida (números en el campo de letras)', () => {
+    // definimos los datos a usar
+    PLACA = 'A34-987'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+
+  it('Caso 69: Validar el manejo de cobro con placa inválida (letras minúsculas)', () => {
+    // definimos los datos a usar
+    PLACA = ' eta-246'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
+  });
+
+  it('Caso 70: Validar el manejo de cobro con placa inválida (placa con símbolos)', () => {
+    // definimos los datos a usar
+    PLACA = 'A$F-4#3'
+    TIPO = ''
+    MONTO = 0;
+    // ingresamos los datos
+    cy.get('#salPlaca').clear().type(PLACA);
+    // intentamos registrar la salida del vehículo
+    cy.contains('button', 'Finalizar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#salPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+
+    // falta cerrar todo y comprobar que NO se hizo la factura
   });
 });
