@@ -7,6 +7,13 @@ describe('Gestión de Tarifas - Usuario Admin', () => {
     cy.loginAdmin(USUARIO, PASSWORD);
     cy.intercept('PUT', '/api/tarifas').as('apiGuardarTarifa');
   });
+  afterEach(() => {
+   
+    const sqlRestore = "UPDATE usuarios SET rol = 'admin' WHERE usuario_login = 'admin'";
+    cy.task('queryDb', sqlRestore);
+
+    
+  });
 
 
   it('Caso 26: Debe registrar una nueva tarifa de Carro correctamente', () => {
