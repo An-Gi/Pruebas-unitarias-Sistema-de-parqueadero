@@ -38,6 +38,7 @@ describe('Gestión de ingreso de vehículos', () => {
     cy.get(`label[for="tipo${TIPO}"]`).click();
     // intentamos registrar el vehículo
     cy.contains('button', 'Ingresar').click();
+
     // el comprobante debe aparecer
     cy.get('#compIngreso').should('be.visible').within(() => {
       // título correcto
@@ -53,15 +54,106 @@ describe('Gestión de ingreso de vehículos', () => {
 
   it('Caso 52: Validar el manejo de ingreso sin placa', () => {
     // definimos los datos a usar
+    PLACA = ''
     TIPO = 'Moto'
     // ingresamos los datos
     cy.get('#ingPlaca').clear();
     cy.get(`label[for="tipo${TIPO}"]`).click();
     // intentamos registrar el vehículo
     cy.contains('button', 'Ingresar').click();
+
     // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
     cy.get('#ingPlaca').then($input => {
       expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+  });
+
+  it('Caso 53: Validar el manejo de ingresos sin tipo de vehículo', () => {
+    // definimos los datos a usar
+    PLACA = 'XYZ-789'
+    TIPO = ''
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear().type(PLACA);
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje indicando que el tipo de vehículo es obligatorio
+    cy.contains('Placa y tipo son obligatorios').should('be.visible');
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+  });
+
+  it('Caso 54: Validar el intento de registrar el ingreso de un vehículo que ya se encuentra adentro', () => {
+    // definimos los datos a usar
+    PLACA = 'AJS-456'
+    TIPO = 'Bici'
+    // ingresamos los datos por primera vez
+    cy.get('#ingPlaca').clear().type(PLACA);
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // registramos el vehículo
+    cy.contains('button', 'Ingresar').click();
+    // ingresamos los datos por segunda vez
+    cy.get('#ingPlaca').clear().type(PLACA);
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo nuevamente
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje indicando que el vehículo ya está registrado
+    cy.contains('El vehículo ya está dentro').should('be.visible');
+    cy.contains('OK').click();
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+  });
+
+  it('Caso 55: Validar el ingreso de un vehículo con placa inválida (longitud < 7)', () => {
+    // definimos los datos a usar
+    PLACA = 'CTR-12'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
+    });
+  });
+
+  it('Caso 56: Validar el ingreso de un vehículo con placa inválida (longitud > 7)', () => {
+    // definimos los datos a usar
+    PLACA = 'CTR-2712'
+    TIPO = 'Carro'
+    // ingresamos los datos
+    cy.get('#ingPlaca').clear();
+    cy.get(`label[for="tipo${TIPO}"]`).click();
+    // intentamos registrar el vehículo
+    cy.contains('button', 'Ingresar').click();
+
+    // el navegador debe devolver un mensaje NO vacio si ocurre algún error con el campo de la placa
+    cy.get('#ingPlaca').then($input => {
+      expect($input[0].validationMessage).to.not.eq('');
+    });
+    // el comprobante NO debe aparecer
+    cy.get('#compIngreso').should('not.be.visible');
+
+    // si se ingresó el vehículo debemos sacarlo
+    cy.get('#compIngreso').then($comprobante => {
+      if ($comprobante.is(':visible')){
+        AUTO_REGISTRADO = true;
+      }
     });
   });
 });
