@@ -4,7 +4,6 @@ describe('Gestión de ingreso de vehículos', () => {
   let METODO_PAGO;
   let MONTO;
   let AUTO_REGISTRADO;
-  let FACTURA_GENERADA;
 
   beforeEach(() => {
     PLACA = '';
@@ -12,7 +11,6 @@ describe('Gestión de ingreso de vehículos', () => {
     METODO_PAGO = '';
     MONTO = 0;
     AUTO_REGISTRADO = false;
-    FACTURA_GENERADA = false;
 
     const USUARIO = 'admin';
     const PASSWORD = 'admin123';
@@ -33,12 +31,9 @@ describe('Gestión de ingreso de vehículos', () => {
   });
 
   afterEach(() => {
-    // cy.reload();
     if (AUTO_REGISTRADO) {
       cy.get('#salPlaca').clear().type(PLACA);
       cy.contains('button', 'Finalizar').click(); // remueve el auto del parqueo
-      // cy.get('input.monto').clear().type('1'); // agregar monto mínimo de pago
-      // cy.get('#btnConfirmPagos').should('be.visible').click(); // remueve el auto de la BD
     }
   });
 
