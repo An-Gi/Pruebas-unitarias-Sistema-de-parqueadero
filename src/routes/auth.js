@@ -62,7 +62,7 @@ router.post('/login', validateLoginData, async (req, res) => {
 
         // Verificar intentos fallidos
         const failedAttempts = await checkFailedAttempts(id_empresa, usuario, ip);
-        if (failedAttempts >= 100) {
+        if (failedAttempts >= 50) {
             await logLoginAttempt(id_empresa, usuario, false, ip);
             return res.status(429).json({
                 success: false,
