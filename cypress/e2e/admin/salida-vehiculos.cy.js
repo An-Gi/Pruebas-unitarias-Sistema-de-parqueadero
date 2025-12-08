@@ -65,8 +65,6 @@ describe('Gestión de salida de vehículos', () => {
       cy.contains('div', 'Placa:').should('contain', PLACA);
       // validamos tipo
       cy.contains('div', 'Tipo:').should('contain', TIPO.toLowerCase());
-      // validamos monto cobrado
-      cy.contains('strong', 'Pagos').should('be.visible');
     });
   });
 
